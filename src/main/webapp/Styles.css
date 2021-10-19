@@ -1,0 +1,7 @@
+@charset "utf-8";
+body {
+  background-image: url('imagenes/camion2.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  background-size: 100% 100%;
+} 
