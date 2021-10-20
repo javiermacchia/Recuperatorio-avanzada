@@ -21,7 +21,7 @@ public class CamionImpl implements CamionDAO{
 		try {
 			con = Conexion.getConnection();
 			state = con.createStatement();
-			ResultSet rs = state.executeQuery("SELECT TOP (1) * from Camiones order by camionID desc");
+			ResultSet rs = state.executeQuery("SELECT TOP (1) * from camion order by idCamion desc");
 			int ultId = 0;
 			if(rs.next()) {
 				ultId = rs.getInt(1);
@@ -40,7 +40,7 @@ public class CamionImpl implements CamionDAO{
 		try {
 			con = Conexion.getConnection();
 			state = con.createStatement();
-			state.executeQuery("DELETE FROM Camiones WHERE camionID = " + id);
+			state.executeQuery("DELETE FROM camion WHERE idCamion = " + id);
 			state.close();
 		}
 		catch(Exception e) {
@@ -57,7 +57,7 @@ public class CamionImpl implements CamionDAO{
 			int id = 0;
 			con = Conexion.getConnection();
 			state = con.createStatement();
-			ResultSet rs = state.executeQuery("SELECT * from Camiones WHERE Patente = '" + patente + "'");
+			ResultSet rs = state.executeQuery("SELECT * from camion WHERE dominio = '" + patente + "'");
 			if(rs.next()) {
 				id = rs.getInt(1);
 				return id;
@@ -77,7 +77,7 @@ public class CamionImpl implements CamionDAO{
 		try {
 			con = Conexion.getConnection();
 			state = con.createStatement();
-			state.executeUpdate("UPDATE Camiones SET ViajeID=" + idViaje +" WHERE camionID="+ idCamion + "");
+			state.executeUpdate("UPDATE camion SET idViaje=" + idViaje +" WHERE idCamion="+ idCamion + "");
 //			state.setInt(1, idViaje);
 //			state.setInt(2, idCamion);
 //			state.executeUpdate();
@@ -100,10 +100,10 @@ public class CamionImpl implements CamionDAO{
 			int idViaje = 0;
 			idViaje = viajedao.buscarViajeCamion(c.getIdCamion());
 			
-			state.executeUpdate("UPDATE Camiones SET Marca='"+ c.getMarca() +"', Modelo='" + c.getModelo() +
-					"', Patente='"+ c.getDominio() +"', Capacidad= '" + c.getCarga() +
-					"', Tanque= '"+ c.getTanque() +"', Consumo= '" + c.getConsumo() + 
-					"', ViajeID='"+ idViaje +"' WHERE camionID=" + c.getIdCamion() +"");
+			state.executeUpdate("UPDATE camion SET marca='"+ c.getMarca() +"', modelo='" + c.getModelo() +
+					"', dominio='"+ c.getDominio() +"', capacidad= '" + c.getCarga() +
+					"', tanque= '"+ c.getTanque() +"', consumo= '" + c.getConsumo() + 
+					"', idViaje='"+ idViaje +"' WHERE idCamion=" + c.getIdCamion() +"");
 			state.close();
 			return;
 		}
@@ -120,9 +120,9 @@ public class CamionImpl implements CamionDAO{
 		try {
 			con = Conexion.getConnection();
 			state = con.createStatement();
-			state.executeUpdate("INSERT INTO Camiones VALUES ('" + c.getIdCamion() + "' , '" + c.getMarca() + "' , '"
+			state.executeUpdate("INSERT INTO camion VALUES ('" + c.getIdCamion() + "' , '" + c.getMarca() + "' , '"
 			+ c.getModelo()	+ "' , '" + c.getDominio() + "' , '" + c.getCarga() 
-			+ "' , '" + c.getTanque() + "' , '" + c.getConsumo() + "' , '" +  "0"  + "')");//El camion no tiene un viaje asignado ni bien se crea
+			+ "' , '" + c.getTanque() + "' , '" + c.getConsumo() + "' , '" +  "3"  + "')");
 			state.close();
 		}
 		catch(Exception e) {
@@ -140,7 +140,7 @@ public class CamionImpl implements CamionDAO{
 			state = con.createStatement();
 			
 			//prep = con.prepareStatement("SELECT * from Camiones WHERE camionID = " + id);
-			ResultSet rs = state.executeQuery("SELECT * from Camiones WHERE camionID =" + id);
+			ResultSet rs = state.executeQuery("SELECT * from camion WHERE idCamion =" + id);
 			if(rs.next()) {
 				String marca = rs.getString(2);
 				String modelo = rs.getString(3);
@@ -168,7 +168,7 @@ public class CamionImpl implements CamionDAO{
 			con = Conexion.getConnection();
 			state = con.createStatement();
 			//con.prepareStatement("SELECT * from Camiones WHERE viajeID = 0"); //O sea estan vacios
-			ResultSet rs = state.executeQuery("SELECT * from Camiones WHERE viajeID = 0"); //O sea estan vacios
+			ResultSet rs = state.executeQuery("SELECT * from camion WHERE idViaje = 0"); //O sea estan vacios
 			while(rs.next()) {
 				int idCamion = rs.getInt(1);
 				String marca = rs.getString(2);

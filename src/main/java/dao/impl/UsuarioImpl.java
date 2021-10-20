@@ -116,7 +116,7 @@ public class UsuarioImpl implements UsuarioDAO{
 		try {
 			IOGeneral io = new IOGeneral();
 			con = Conexion.getConnection();
-			ps = con.prepareStatement("UPDATE Usuarios SET clave=?, nombreUsuario=? WHERE idUsuario=?");
+			ps = con.prepareStatement("UPDATE usuario SET password=?, userName=? WHERE id=?");
 			ps.setString(1, u.getClave());
 			ps.setString(2, u.getNombreUsuario());
 			ps.setLong(3, u.getIdUsuario());
@@ -136,7 +136,7 @@ public class UsuarioImpl implements UsuarioDAO{
 			Usuario us = null;
 			con = Conexion.getConnection();
 			stm = con.createStatement();
-			ResultSet rs = stm.executeQuery("SELECT * FROM Usuarios WHERE nombreUsuario = '"+ nombreUsuario + "' AND clave ='" + clave + "'");
+			ResultSet rs = stm.executeQuery("SELECT * FROM usuario WHERE userName = '"+ nombreUsuario + "' AND password ='" + clave + "'");
 			if(rs.next() == true) {
 				int idUsuario = rs.getInt(1);
 				String perfil = rs.getString(4);
@@ -151,14 +151,14 @@ public class UsuarioImpl implements UsuarioDAO{
 		}
 	}
 	
-	public void agregarUsuario(String nombreUsuario, String clave, int id) {
+	public void agregarUsuario(String nombreUsuario, String clave, long id) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		try {
 			IOGeneral io = new IOGeneral();
 			con = Conexion.getConnection();
-			ps = con.prepareStatement("insert into Usuarios values(?,?,?,?)");
-			ps.setInt(1, id);
+			ps = con.prepareStatement("insert into usuario values(?,?,?,?)");
+			ps.setLong(1, id);
 			ps.setString(2, clave);
 			ps.setString(3, nombreUsuario);
 			ps.setString(4, "Chofer");
@@ -172,19 +172,42 @@ public class UsuarioImpl implements UsuarioDAO{
 		}
 	}
 
-	@Override
-	public void eliminarUsuario(int id) throws Exception {
+	public void eliminarUsuario(long id) throws Exception {
 			Connection con = null;
 			PreparedStatement ps = null;
 			con = Conexion.getConnection();
-			ps = con.prepareStatement("DELETE FROM Usuarios WHERE idUsuario = " + id);
+			ps = con.prepareStatement("DELETE FROM usuario WHERE id = " + id);
 			ps.execute();
 			ps.close();	
 	}
 
-	@Override
-	public Usuario buscarUsuarioID(int id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Usuario buscarUsuarioID(long id) throws Exception {
+			// TODO Auto-generated method stub
+
+			try {
+				Connection connection = Conexion.getConnection();
+				Statement stm = connection.createStatement();
+				ResultSet rs = stm.executeQuery("SELECT * FROM usuario WHERE id=" + id );
+				Usuario us = new Usuario();
+
+				if (rs.next()) {
+
+					us.setIdUsuario(id);
+					us.setClave(rs.getString("password"));
+					us.setNombreUsuario(rs.getString("userName"));
+					us.setPerfil(rs.getString("perfil"));
+
+					System.out.println(rs.getString("id") + " - " + rs.getString("userName"));
+					return us;
+				}
+
+				stm.close();
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null;
+			}
+			return null;
+		}
+
 }

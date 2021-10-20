@@ -1,6 +1,7 @@
 package dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class ChoferImpl implements ChoferDAO{
 		PreparedStatement prep = null;
 		try {
 			con = Conexion.getConnection();
-			prep = con.prepareStatement("SELECT TOP (1) * from Choferes order by IdUsuario desc");
+			prep = con.prepareStatement("SELECT TOP (1) * from chofer order by dni desc");
 			ResultSet rs = prep.executeQuery();
 			int ultId = 0;
 			if(rs.next()) {
@@ -46,7 +47,7 @@ public class ChoferImpl implements ChoferDAO{
 		try {
 			int id = 0;
 			con = Conexion.getConnection();
-			prep = con.prepareStatement("SELECT * from Choferes WHERE documento = " + dni);
+			prep = con.prepareStatement("SELECT * from chofer WHERE dni = " + dni);
 			ResultSet rs = prep.executeQuery();
 			if(rs.next()) {
 				id = rs.getInt(1);
@@ -62,25 +63,25 @@ public class ChoferImpl implements ChoferDAO{
 	}
 	
 	
-	public Chofer buscarChofer(int id) {
+	public Chofer buscarChofer(long id) {
 		Connection con = null;
 		PreparedStatement prep = null;
 		Chofer c = null;
 		IOGeneral io = new IOGeneral();
 		try {
 			con = Conexion.getConnection();
-			prep = con.prepareStatement("SELECT * from Choferes WHERE IdUsuario = " + id);
+			prep = con.prepareStatement("SELECT * from chofer WHERE dni = " + id);
 			ResultSet rs = prep.executeQuery();
 			if(rs.next()) {
 				UsuarioDAO usdao = UsuarioFactory.getImplementation("BD");
 				Usuario us = usdao.buscarUsuarioID(id);
-				String nombre = rs.getString(2);
-				String apellido = rs.getString(3);
-				long dni = rs.getLong(4);
-				String fechaNacS = rs.getString(5);
+				String nombre = rs.getString(1);
+				String apellido = rs.getString(2);
+				long dni = rs.getLong(3);
+				String fechaNacS = rs.getString(4);
 				Calendar fechaNac = io.convertirFechaStringaCalendar(fechaNacS);
-				String categoria = rs.getString(6);
-				int movil = rs.getInt(7); 
+				String categoria = rs.getString(5);
+				int movil = rs.getInt(6); 
 				//List <Viaje> viajes = new ArrayList<Viaje>(); //Por el momento no necesitamos los viajes del chofer
 				//ViajeDAO vidao = ViajeFactory.getImplementation("BD");
 				//viajes = vidao.buscarViajesChofer(id);
@@ -101,7 +102,7 @@ public class ChoferImpl implements ChoferDAO{
 		try {
 			IOGeneral io = new IOGeneral();
 			con = Conexion.getConnection();
-			ps = con.prepareStatement("UPDATE Choferes SET nombre=?, apellido=?, documento=?, fechaNac=?, Categoria=?, Movil=? WHERE IdUsuario=?");
+			ps = con.prepareStatement("UPDATE chofer SET nombre=?, apellido=?, documento=?, fechaNac=?, Categoria=?, Movil=? WHERE dni=?");
 			ps.setString(1, c.getNombre());
 			ps.setString(2, c.getApellido());
 			ps.setLong(3, c.getDni());
@@ -123,16 +124,19 @@ public class ChoferImpl implements ChoferDAO{
 		Connection con = null;
 		PreparedStatement ps = null;
 		try {
+			Calendar cal = c.getFechaNac(); //This to obtain today's date in our Calendar var.
+
+			java.sql.Date date = new Date (cal.getTimeInMillis());
+			
 			IOGeneral io = new IOGeneral();
 			con = Conexion.getConnection();
-			ps = con.prepareStatement("insert into Choferes values(?,?,?,?,?,?,?)");
-			ps.setLong(1, c.getIdUsuario());
-			ps.setString(2, c.getNombre());
-			ps.setString(3, c.getApellido());
-			ps.setLong(4, c.getDni());
-			ps.setString(5, io.convertirFechaCalendaraString(c.getFechaNac()));
-			ps.setString(6, c.getCategoria());
-			ps.setInt(7, c.getMovil());
+			ps = con.prepareStatement("insert into chofer values(?,?,?,?,?,?)");
+			ps.setString(1, c.getNombre());
+			ps.setString(2, c.getApellido());
+			ps.setLong(3, c.getIdUsuario());
+			ps.setDate(4, (date));
+			ps.setString(5, c.getCategoria());
+			ps.setInt(6, c.getMovil());
 			ps.execute();
 			
 			ps.close();
@@ -150,7 +154,7 @@ public class ChoferImpl implements ChoferDAO{
 		IOGeneral io = new IOGeneral();
 		try {
 			con = Conexion.getConnection();
-			prep = con.prepareStatement("SELECT * from Choferes");
+			prep = con.prepareStatement("SELECT * from chofer");
 			ResultSet rs = prep.executeQuery();
 			while(rs.next()) {
 				int idChofer = rs.getInt(1);
@@ -178,19 +182,25 @@ public class ChoferImpl implements ChoferDAO{
 	}
 
 	@Override
-	public void eliminarChofer(int id) throws Exception {
+	public void eliminarChofer(long id) throws Exception {
 		Connection con = null;
 		PreparedStatement ps = null;
+		PreparedStatement ps2 = null;
 		try {
 			con = Conexion.getConnection();
-			ps = con.prepareStatement("DELETE FROM Choferes WHERE IdUsuario = " + id);
+			ps2 = con.prepareStatement("UPDATE camion SET idChofer = '0' Where idChofer = '"+id+"'");
+			ps = con.prepareStatement("DELETE FROM chofer WHERE dni = " + id);
+			ps2.execute();
+			ps2.close();
 			ps.execute();
 			ps.close();
 			UsuarioDAO usDAO = UsuarioFactory.getImplementation("BD");
 			usDAO.eliminarUsuario(id);
 		}
 		catch(Exception e) {
+			System.out.println("NO EXISTE EL USUARIO");
 			e.printStackTrace();
 		}
 	}
+
 }

@@ -45,14 +45,39 @@
 					<div class="card-body p-4 p-sm-5">
 						<h5 class="card-title text-center mb-5 fw-light fs-5">Sign In</h5>
 						<form method="post" action="./servletLogin">
-			
+<%
+String claveUs = "";
+String nombreUs = "";
+Cookie[] cookies = request.getCookies();
+if(cookies != null) {
+	for(Cookie c: cookies) {
+		if(c.getName().equals("usuario")) {
+			nombreUs = c.getValue();
+		}
+		if(c.getName().equals("claveUsuario")) {
+			claveUs = c.getValue();
+		}
+	}
+}
+
+%>			
 							<div class="form-floating mb-3">
+							<% if(nombreUs.equals("")){ %>
 								<input type="text" class="form-control" name="usuario"
 									placeholder="Usuario" required>
+									<% } else{ %>
+								<input type="text" class="form-control" name="usuario"
+									placeholder="Usuario" value="<%= nombreUs %>" required>	
+							<% } %> 
 							</div>
 							<div class="form-floating mb-3">
+							<% if(claveUs.equals("")){ %>
 								<input type="password" class="form-control" name="password"
 									 placeholder="Contraseña" required>
+									 <% } else{ %>
+									 <input type="password" class="form-control" name="password"
+									 placeholder="Contraseña" value="<%= claveUs %>" required>
+									 <% } %>
 							</div>
 							<div class="d-grid">
 								<button class="btn btn-primary"

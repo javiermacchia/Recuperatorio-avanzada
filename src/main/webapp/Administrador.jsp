@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="controller.servletEdit"%>
 <html>
 <head>
 <link rel="Stylesheet" href="Styles.css">
@@ -43,14 +44,14 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-primary">
 		<a class="navbar-brand" href="#">Envios Pepito</a>
-				<a class="navbar-brand mr-sm-2" href="http://localhost:8080/Parcial_Javier_Mariano_Macchiavello_2021/Administrador.jsp">home</a>
+				<a class="navbar-brand mr-sm-2" href="http://localhost:8080/Parcial_Javier_Mariano_Macchiavello_2021/Administrador.jsp">Home</a>
 					<div name="div1" id="div1">
 					<input type="radio" name="radio" onclick="agregar()" id="radioAgregar" value="Agregar ">Agregar
 					<input type="radio" name="radio" onclick="agregar()" id="radioMod">Modificar 
 					<input type="radio" name="radio" onclick="agregar()" id="radioBaja">Eliminar 
 					</div>
-					<div class="navbar-text">					<a class="navbar-brand mr-sm-2"
-					href="http://localhost:8080/Parcial_Javier_Mariano_Macchiavello_2021/login.jsp">Exit</a>
+					<div class="navbar-text" style="margin-left: 60%;"><a class="navbar-brand mr-sm-2"
+					href="http://localhost:8080/Parcial_Javier_Mariano_Macchiavello_2021/salir.jsp">Exit</a>
 	</div>
 	</nav>
 <script>
@@ -179,6 +180,10 @@ function verificacionesFinales(){
 
 <form action="servletEdit" method="get">
 <input type="number" name="campoID" id="campoID" placeholder="ID a editar" required>
+<input type="radio" id="Echofer" name="radio"  value="Chofer" required>
+                      <label >Editar Chofer</label>
+<input type="radio" id="Ecamion" name="radio"  value="Camion" required>
+                      <label >Editar Camion</label>
 <input type="submit" class="btn btn-success" name="btnEnviarEditar" value="Editar" >
 </form>
 </div>
@@ -186,7 +191,12 @@ function verificacionesFinales(){
 <div name="divEliminar" id="divEliminar" style="display:none">
 <form action="servletEdit" method="get">
 <input type="number" name="campoID" id="campoID" placeholder="ID a eliminar" required>
-<input type="submit" class="btn btn-success" name="btnEnviarEliminar" value="Eliminar" >
+<input type="radio" id="Echofer" name="radio"  value="Chofer" required>
+                      <label >Eliminar Chofer</label>
+<input type="radio" id="Ecamion" name="radio"  value="Camion" required>
+                      <label >Eliminar Camion</label>
+<input type="submit" class="btn btn-success" name="btnEnviarEliminar" value="Eliminar">
+
 </form>
 </div>
 
@@ -195,8 +205,6 @@ function verificacionesFinales(){
 <form action="servletAdmin" method="post" id="formAdd" name="formAdd" onsubmit="return verificacionesFinales()">
  <table>
 
-<c:choose>
-<c:when test = '${dato == "Camion"}'>
  <tr>
  <td>
 <label><b>Marca del camion: </b></label>
@@ -255,8 +263,6 @@ function verificacionesFinales(){
   <input type="number" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="cantLitrosConsumidos" min="0" step="any" id="cantLitrosConsumidos" placeholder="Ingrese la capacidad de litros consumido (en KM)" required>
  </td>
 </tr>
- </c:when>
- <c:when test = '${dato == "Chofer"}'>
 
  <tr>
  <td>
@@ -349,11 +355,9 @@ function verificacionesFinales(){
 <small id="c3Help" class="form-text">Camiones sin acoplado o casas rodantes motorizadas de más de 24.000 kg</small>
  </td>
 </tr>
-</c:when>
-<c:when test = '${dato == "Viaje"}'>
 
 <%
-String origenes[] = {"CABA", "Córdoba", "Corrientes", "Neuquén", "Formosa", "La Rioja", "Mendoza", "La Plata"};
+String origenes[] = {"CABA", "Cordoba", "Corrientes", "Neuquén", "Formosa", "La Rioja", "Mendoza", "La Plata"};
 pageContext.setAttribute("arrOrigen", origenes);
 %>
 
@@ -413,9 +417,6 @@ pageContext.setAttribute("arrOrigen", origenes);
   <input class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" type="number" name="distancia" id="distancia" min="0" placeholder="distancia del trayecto" step="any" required>
  </td>
 </tr>
-
-</c:when>
-</c:choose>
  <tr>
  <td id="ErrorFinal" colspan="2" style="display:none">
 <div class="alert alert-danger" id="divAlert3" role="alert">

@@ -1,3 +1,4 @@
+<%@page import="controller.servletLogin"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@page import="controller.servletChofer"%>
@@ -34,9 +35,8 @@
 	}
 </script>
 
-<%
-servletChofer sc = new servletChofer();
-%>
+<% servletChofer sc = new servletChofer(); %>
+<% servletLogin sl = new servletLogin(); %>
 <head>
 <meta charset="ISO-8859-1">
 
@@ -51,8 +51,24 @@ servletChofer sc = new servletChofer();
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<a class="nav-item nav-link"
-			href="http://localhost:8080/Parcial_Javier_Mariano_Macchiavello_2021/Chofer.jsp">home</a>
+			href="http://localhost:8080/Parcial_Javier_Mariano_Macchiavello_2021/Chofer.jsp">Home</a>
 	</nav>
+	
+	<form method="GET" action="servletChofer">
+	<select id="cmbViajes" name="cmbViajes">
+	<option selected disabled>seleccione un ID</option>
+	<% for (int i=0;i<sl.getCh().getListaViaje().size(); i++ ){ %>
+		<option><%= sl.getCh().getListaViaje().get(i).getIdViaje()  %></option>
+	
+	<%} %>
+	</select>
+	<button class="btn btn-primary" type="submit" name="btnEnviarId">Buscar Viaje</button>
+	</form>
+	<% if(request.getAttribute("idViajes")!=null){ %>
+	<div style="display:block">
+	<%} else { %>
+	<div style="display:none">
+	<%} %>
 	<form method="POST" action="servletChofer">
 		<label>Viaje con destino: <%=sc.getViaje().getDestino()%></label> <br>
 		<label>Origen: <%=sc.getViaje().getOrigen()%></label> <br> <label>Distancia
@@ -86,7 +102,8 @@ servletChofer sc = new servletChofer();
 		<%
 		}
 		%>
-		<button class="btn btn-primary" type="submit" name="btnContinuar">Continuar</button>
+		<button class="btn btn-primary" type="submit" name="btnContinuar">Enviar y salir</button>
 	</form>
+	</div>
 </body>
 </html>

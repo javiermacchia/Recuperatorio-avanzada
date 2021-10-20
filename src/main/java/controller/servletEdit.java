@@ -49,15 +49,17 @@ public class servletEdit extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String salir = request.getParameter("Exit");
 		String btnEnviarEditar = request.getParameter("btnEnviarEditar");
 		String btnEnviarEliminar = request.getParameter("btnEnviarEliminar");
 		String campoID = request.getParameter("campoID");
+		String radio = request.getParameter("radio");
 		int id = Integer.parseInt(campoID);
 		if(btnEnviarEliminar != null) {
-			System.out.println(btnEnviarEliminar);
-			String split[] = btnEnviarEliminar.split(" ");
-			System.out.println(id + " " + split[1]);
-			if(split[1].equals("Chofer")) {
+			System.out.println("IDDDDDDDDDDDDDDDDDD "+id);
+			System.out.println("RADIOOO " + radio);
+			if(radio.equals("Chofer")) {
+				System.out.println("funcionaaa");
 				ChoferDAO chofDAO = ChoferFactory.getImplementation("BD");
 				try {
 					chofDAO.eliminarChofer(id);
@@ -65,7 +67,7 @@ public class servletEdit extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
-			else if(split[1].equals("Camion")) {
+			else if(radio.equals("Camion")) {
 				CamionDAO camionDAO = CamionFactory.getImplementation("BD");
 				try {
 					camionDAO.eliminarCamion(id);
@@ -73,21 +75,13 @@ public class servletEdit extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
-		else if(split[1].equals("Viaje")) {
-			ViajeDAO viajeDAO = ViajeFactory.getImplementation("BD");
-			try {
-				viajeDAO.eliminarViaje(id);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 		}
 		if(btnEnviarEditar != null) {
 			System.out.println(btnEnviarEditar);
-			String split[] = btnEnviarEditar.split(" ");
-			System.out.println("EDIT:" + id + " " + split[1]);
-			request.getSession().setAttribute("datoSeleccionado", split[1]);
-			if(split[1].equals("Chofer")) {
+			String radio2 = request.getParameter("radio");
+			//System.out.println("EDIT:" + id + " " + split[1]);
+			request.getSession().setAttribute("datoSeleccionado", radio2);
+			if(radio2.equals("Chofer")) {
 				ChoferDAO choDAO = ChoferFactory.getImplementation("BD");
 				try {
 					chof = choDAO.buscarChofer(id);
@@ -95,7 +89,7 @@ public class servletEdit extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
-			else if(split[1].equals("Camion")) {
+			else if(radio2.equals("Camion")) {
 				CamionDAO camDAO = CamionFactory.getImplementation("BD");
 				try {
 					cam = camDAO.buscarCamion(id);
@@ -103,7 +97,7 @@ public class servletEdit extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
-			else if(split[1].equals("Viaje")) {
+			else if(radio2.equals("Viaje")) {
 				ViajeDAO viajeDAO = ViajeFactory.getImplementation("BD");
 				try {
 					viaje = viajeDAO.buscarViaje(id);
@@ -132,6 +126,7 @@ public class servletEdit extends HttpServlet {
 			response.sendRedirect("Editar.jsp");
 		}
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		
 	}
 
 	public Camion getCamion() {

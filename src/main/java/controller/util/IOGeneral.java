@@ -7,14 +7,14 @@ public class IOGeneral {
 	public Calendar convertirFechaStringaCalendar(String fechaS) {
 		//System.out.println(fechaS);
 		Calendar fecha = Calendar.getInstance();
-		String split[] = fechaS.split("/");
+		String split[] = fechaS.split("-");
 		fecha.set(Integer.parseInt(split[2]), (Integer.parseInt(split[1])-1), Integer.parseInt(split[0]));
 		return fecha;
 	}
 	
 	public String convertirFechaCalendaraString(Calendar fecha) {
 		String fechaS = "";
-		return fechaS = fecha.get(Calendar.DATE) + "/" + (fecha.get(Calendar.MONTH)+1) + "/" + fecha.get(Calendar.YEAR);
+		return fechaS = fecha.get(Calendar.DATE) + "-" + (fecha.get(Calendar.MONTH)+1) + "-" + fecha.get(Calendar.YEAR);
 	}
 	
 	public boolean pesoCorrecto(double peso, String categoria) {

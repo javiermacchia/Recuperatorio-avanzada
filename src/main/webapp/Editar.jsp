@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="controller.util.IOGeneral"%>
+<%@page import="controller.servletEdit"%>
 <html>
 <head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -37,8 +39,8 @@
 			aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-		<a class="nav-item nav-link"
-			href="http://localhost:8080/Parcial_Javier_Mariano_Macchiavello_2021/Chofer.jsp">home</a>
+		<a class="navbar-brand"
+			href="http://localhost:8080/Parcial_Javier_Mariano_Macchiavello_2021/Administrador.jsp">Home</a>
 	</nav>
 <script>
 
@@ -135,15 +137,16 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 
 <form action="servletEdit" method="POST" onsubmit="return verificacionesFinales()">
 <table>
-<c:choose>
-<c:when test = '${dato == "Camion"}'>
 
+<% servletEdit se = new servletEdit(); %>
+<% IOGeneral io = new IOGeneral(); %>
+ <% if(se.getCamion() != null){ %>
  <tr>
  <td>
 <label>Marca del camion: </label>
  </td>
   <td>
-<input type="text" name="marca" id="marca" placeholder="Ingrese la marca del camion" required>
+<input type="text" name="marca" id="marca" value="<%= se.getCamion().getMarca() %>" placeholder="Ingrese la marca del camion" required>
  </td>
 </tr>
 
@@ -152,7 +155,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Modelo del camion: </label>
  </td>
   <td>
-<input type="text" name="modelo" id="modelo" placeholder="Ingrese el modelo del camion" required>
+<input type="text" name="modelo" id="modelo" value="<%= se.getCamion().getModelo() %>" placeholder="Ingrese el modelo del camion" required>
  </td>
 </tr>
 
@@ -161,7 +164,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Patente del camion: </label>
  </td>
   <td>
-<input type="text" name="dominio" id="dominio" onblur="validarPatente()"  placeholder="Ingrese la patente del camion" required>
+<input type="text" name="dominio" id="dominio" onblur="validarPatente()" value="<%= se.getCamion().getDominio() %>"  placeholder="Ingrese la patente del camion" required>
 
 <div class="alert alert-danger" style="display:none" id="divAlert" role="alert">
   La patente es incorrecta! Formato valido: AA 123 AA
@@ -175,7 +178,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Capacidad del camion (en kg.): </label>
  </td>
   <td>
-<input type="number" name="capacidadToneladas" min="0" step="any" id="capacidadToneladas"  placeholder="Ingrese la capacidad de toneldas del camion (en kg.)" required>
+<input type="number" name="capacidadToneladas" min="0" step="any" id="capacidadToneladas" value="<%= se.getCamion().getCarga() %>"  placeholder="Ingrese la capacidad de toneldas del camion (en kg.)" required>
  </td>
 </tr>
 
@@ -184,7 +187,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Capacidad de nafta (en L): </label>
  </td>
   <td>
-<input type="number" name="cantLitrosNafta" min="0" step="any" id="cantLitrosNafta"  placeholder="Ingrese la capacidad de nafta (en litros)" required>
+<input type="number" name="cantLitrosNafta" min="0" step="any" id="cantLitrosNafta" value="<%= se.getCamion().getTanque() %>"  placeholder="Ingrese la capacidad de nafta (en litros)" required>
  </td>
 </tr>
 
@@ -193,12 +196,12 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Capacidad de litros consumido por Km (en km): </label>
  </td>
   <td>
-<input type="number" name="cantLitrosConsumidos" min="0" step="any" id="cantLitrosConsumidos"  placeholder="Ingrese la capacidad de litros consumido (en KM)" required>
+<input type="number" name="cantLitrosConsumidos" min="0" step="any" id="cantLitrosConsumidos" value="<%= se.getCamion().getConsumo() %>" placeholder="Ingrese la capacidad de litros consumido (en KM)" required>
  </td>
 </tr>
-</c:when>
-<c:when test = '${dato == "Chofer"}'>
 
+<% } %>
+<% if(se.getChofer() != null){ %>
 <tr>
  <td>
 <label>ID usuario (Solo lectura): </label>
@@ -213,7 +216,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Nombre de usuario: </label>
  </td>
   <td>
-<input type="text" name="nombreUsuario" id="nombreUsuario"  placeholder="Ingrese el nombre de usuario" required>
+<input type="text" name="nombreUsuario" id="nombreUsuario"  placeholder="Ingrese el nombre de usuario" value= "<%= se.getChofer().getNombreUsuario() %>"required>
  </td>
 </tr>
 
@@ -244,7 +247,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Nombre del chofer: </label>
  </td>
   <td>
-<input type="text" name="nombreChofer"  id="nombreChofer" placeholder="Ingrese el nombre del chofer" required>
+<input type="text" name="nombreChofer"  id="nombreChofer" placeholder="Ingrese el nombre del chofer"  value="<%= se.getChofer().getNombre() %>" required>
  </td>
 </tr>
 
@@ -253,7 +256,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Apellido del chofer: </label>
  </td>
   <td>
-<input type="text" name="apellidoChofer" id="apellidoChofer"  placeholder="Ingrese el apellido del chofer" required>
+<input type="text" name="apellidoChofer" id="apellidoChofer"  placeholder="Ingrese el apellido del chofer" value="<%= se.getChofer().getApellido() %>" required>
  </td>
 </tr>
 
@@ -262,7 +265,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Documento del chofer: </label>
  </td>
   <td>
-<input type="number" name="documentoChofer" id="documentoChofer"  placeholder="Ingrese el Documento del chofer" required>
+<input type="number" name="documentoChofer" id="documentoChofer"  placeholder="Ingrese el Documento del chofer" value="<%= se.getChofer().getDni() %>" required>
  </td>
 </tr>
 
@@ -272,7 +275,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
  </td>
 
   <td>
-<input type="date" name="fechaNacChof" id="fechaNacChof"  placeholder="Ingrese la fecha de nacimiento" required>
+<input type="text" name="fechaNacChof" id="fechaNacChof"  placeholder="Ingrese la fecha de nacimiento" value="<%= io.convertirFechaCalendaraString(se.getChofer().getFechaNac()) %>" required>
  </td>
 </tr>
 
@@ -281,7 +284,7 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 <label>Celular del chofer: </label>
  </td>
   <td>
-<input type="number" name="celularChof" id="celularChof"  placeholder="Ingrese el telefono del chofer" required>
+<input type="number" name="celularChof" id="celularChof"  placeholder="Ingrese el telefono del chofer" value="<%= se.getChofer().getMovil() %>" required>
  </td>
 </tr>
 
@@ -292,70 +295,15 @@ alert('Esta seguro? Al cambiar este dato todos los viajes de este chofer seran r
 </tr>
 <tr>
 <td colspan="2">
-
- <tr>
- <td>
-<label>Origen: </label>
- </td>
-  <td>
-<select name="selectOrigen"  id="selectOrigen" required>
-
-
-</select>
+<label><input type="radio" name="radioCategoria" id="C1" value="C1" required <% if (se.getChofer().getCategoria().equalsIgnoreCase("C1")){ %> checked <% } %>> C.1</label>
+<small id="c1Help" class="form-text">Camiones sin acoplado o casas rodantes motorizadas hasta 12.000 kg</small>
+<label><input type="radio" name="radioCategoria" id="C2" value="C2" required <% if (se.getChofer().getCategoria().equalsIgnoreCase("C2")){ %> checked <% } %>> C.2</label>
+<small id="c2Help" class="form-text">Camiones sin acoplado o casas rodantes motorizadas hasta 24.000 kg</small>
+<label><input type="radio" name="radioCategoria" id="C3" value="C3" required <% if (se.getChofer().getCategoria().equalsIgnoreCase("C3")){ %> checked <% } %>> C.3</label>
+<small id="c3Help" class="form-text">Camiones sin acoplado o casas rodantes motorizadas de más de 24.000 kg</small>
  </td>
 </tr>
-
- <tr id="destinosFila">
- <td>
-<label>Destino: </label>
- </td>
-  <td>
-<select name="selectDestino" id="selectDestino" required>
-
-
-
-</select>
- </td>
-</tr>
-
- <tr>
- <td>
-<label>Patente del camion: </label>
- </td>
-  <td>
-   <select name="selectPatente">
-  <option></option>
-
-  </select> 
-
- </td>
-</tr>
-
- <tr>
- <td>
-<label>Chofer del camion: </label>
- </td>
-  <td>
-
-   <select name="selectChofer">
-
-  </select> 
- </td>
-</tr>
-
- <tr>
- <td>
-<label>Distancia entre ambos: </label>
- </td>
-  <td>
-  
-<input type="number" name="distancia" id="distancia"  min="0" placeholder="distancia del trayecto" step="any" required>
- </td>
-</tr>
-
-</c:when>
-</c:choose>
-
+<% } %>
  <tr>
  <td id="ErrorFinal" colspan="2" style="display:none">
 <div class="alert alert-danger" id="divAlert3" role="alert">

@@ -90,7 +90,7 @@ public class servletAdmin extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String btnEnviar = request.getParameter("btnEnviar");
-		if(btnEnviar.equals("Agregar Camion")) {
+		if(btnEnviar != null) {
 			String marca = request.getParameter("marca");
 			String modelo = request.getParameter("modelo");
 			String dominio = request.getParameter("dominio");
@@ -100,7 +100,9 @@ public class servletAdmin extends HttpServlet {
 			double capacidadToneladas = Double.parseDouble(capacidadToneladasS);
 			double cantLitrosNafta = Double.parseDouble(cantLitrosNaftaS);
 			double cantLitrosConsumidos = Double.parseDouble(cantLitrosConsumidosS);
+			System.out.println("AGREGAR");
 		    CamionDAO camionDAO = CamionFactory.getImplementation("BD");
+		    System.out.println("AGREGADO");
 		    int ultId = 0;
 			try {
 				ultId = camionDAO.obtenerUltId();
@@ -109,16 +111,16 @@ public class servletAdmin extends HttpServlet {
 			}
 			int id = ultId;
 			id++;
+			
+			Viaje vi = new Viaje();
 			//System.out.println(id);
-			sl.getCamiones().add(new Camion(id, marca, modelo, dominio.toUpperCase(), capacidadToneladas, cantLitrosNafta, cantLitrosConsumidos, null)); //Es null porque es un nuevo camion
+			sl.getCamiones().add(new Camion(id, marca, modelo, dominio.toUpperCase(), capacidadToneladas, cantLitrosNafta, cantLitrosConsumidos, vi)); //Es un viaje por defecto por la relacion en la BD
 			try {
 				camionDAO.agregarCamion(sl.getCamiones().get(sl.getCamiones().size()-1));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			sl.menuAdmin(response);
-		}
-		if(btnEnviar.equals("Agregar Chofer")) {
 			IOGeneral io = new IOGeneral();
 			String nombreUsuario = request.getParameter("nombreUsuario");
 			String claveUsuario = request.getParameter("claveUsuario");
@@ -133,29 +135,22 @@ public class servletAdmin extends HttpServlet {
 			String celularChof = request.getParameter("celularChof");
 			int celular = Integer.parseInt(celularChof);
 			 UsuarioDAO usDAO = UsuarioFactory.getImplementation("BD");
-			    int ultId = 0;
+			    
+				sl.getChoferes().add(new Chofer(dni, claveUsuario, nombreUsuario, "Chofer", nombreChofer, apellidoChofer, dni, fechaNac, radioCategoria, celular, null));
+				
+				ChoferDAO choDAO = ChoferFactory.getImplementation("BD");
 				try {
-					ultId = usDAO.obtenerUltId();
+					usDAO.agregarUsuario(nombreUsuario, claveUsuario, dni);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				ultId++;
-				sl.getChoferes().add(new Chofer(ultId, claveUsuario, nombreUsuario, "Chofer", nombreChofer, apellidoChofer, dni, fechaNac, radioCategoria, celular, null));
-				
-				ChoferDAO choDAO = ChoferFactory.getImplementation("BD");
 				try {
 					choDAO.agregarChofer(sl.getChoferes().get(sl.getChoferes().size()-1));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				try {
-					usDAO.agregarUsuario(nombreUsuario, claveUsuario, ultId);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+
 				sl.menuAdmin(response);
-		}
-		if(btnEnviar.equals("Agregar Viaje")) {
 			String pantente = request.getParameter("pantenteBuscar");
 			String destinoS = request.getParameter("selectDestino");
 			String origenS = request.getParameter("selectOrigen");

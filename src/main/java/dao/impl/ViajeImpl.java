@@ -18,7 +18,7 @@ public class ViajeImpl implements ViajeDAO{
 		Connection con = null;
 		PreparedStatement prep = null;
 		con = Conexion.getConnection();
-		prep = con.prepareStatement("SELECT TOP (1) * from Viajes order by ViajeID desc");
+		prep = con.prepareStatement("SELECT TOP (1) * from viaje order by idViaje desc");
 		ResultSet rs = prep.executeQuery();
 		int ultId = 0;
 		if(rs.next())
@@ -31,7 +31,7 @@ public class ViajeImpl implements ViajeDAO{
 		Connection con = null;
 		PreparedStatement ps = null;
 		con = Conexion.getConnection();
-		ps = con.prepareStatement("insert into Viajes values(?,?,?,?,?,?,?,?,?)");
+		ps = con.prepareStatement("insert into viaje values(?,?,?,?,?,?,?,?)");
 		ps.setInt(1, v.getIdViaje());
 		ps.setString(2, v.getDestino());
 		ps.setString(3, v.getOrigen());
@@ -39,7 +39,6 @@ public class ViajeImpl implements ViajeDAO{
 		ps.setBoolean(5, false);
 		ps.setDouble(6, v.getTiempoViaje());
 		ps.setDouble(7, v.getDistancia());
-		ps.setLong(8, idChofer);
 		ps.setInt(9, idCamion);
 		ps.execute();
 		ps.close();
@@ -49,13 +48,14 @@ public class ViajeImpl implements ViajeDAO{
 
 
 	
-	public List <Viaje> buscarViajesChoferID(int idChofer){
+	public List <Viaje> buscarViajesChoferID(long idChofer){
 		Connection con = null;
 		PreparedStatement prep = null;		
 		try {
 			List <Viaje> viajeList = new ArrayList<Viaje>();
 			con = Conexion.getConnection();
-			prep = con.prepareStatement("SELECT * from Viajes WHERE ChoferId = " + idChofer);
+			prep = con.prepareStatement("SELECT * FROM viaje v INNER JOIN camion c on c.idCamion = v.idCamion "
+					+ "INNER JOIN chofer ch on c.idChofer = ch.dni WHERE idChofer = " + idChofer);
 			ResultSet rs = prep.executeQuery();			
 			while(rs.next()) {
 			int idViaje = rs.getInt(1);	
@@ -82,16 +82,16 @@ public class ViajeImpl implements ViajeDAO{
 		try {
 			IOGeneral io = new IOGeneral();
 			con = Conexion.getConnection();
-			ps = con.prepareStatement("UPDATE Viajes SET Destino=?, Origen=?, Iniciado=?, Finalizado=?, tiempoViaje=?, Distancia=?, ChoferId=?, CamionId=? WHERE ViajeID=?");
+			System.out.println("INICIO "+v.isFinalizado());
+			ps = con.prepareStatement("UPDATE viaje SET destino=?, origen=?, inicio=?, finalizacion=?, tiempoViaje=?, distancia=?, idCamion=? WHERE idViaje=?");
 			ps.setString(1, v.getDestino());
 			ps.setString(2, v.getOrigen());
 			ps.setBoolean(3, v.isInicio());
 			ps.setBoolean(4, v.isFinalizado());
 			ps.setDouble(5, v.getTiempoViaje());
 			ps.setDouble(6, v.getDistancia());
-			ps.setLong(7, idChofer);
-			ps.setInt(8, idCamion);
-			ps.setInt(9, v.getIdViaje());
+			ps.setInt(7, idCamion);
+			ps.setInt(8, v.getIdViaje());
 			ps.executeUpdate();
 			ps.close();
 		}
@@ -106,7 +106,7 @@ public class ViajeImpl implements ViajeDAO{
 		Connection con = null;
 		PreparedStatement ps = null;
 		con = Conexion.getConnection();
-		ps = con.prepareStatement("DELETE FROM Viajes WHERE ViajeID = " + id);
+		ps = con.prepareStatement("DELETE FROM viajes WHERE idViaje = " + id);
 		ps.execute();
 		ps.close();					
 	}
@@ -118,7 +118,7 @@ public class ViajeImpl implements ViajeDAO{
 		try {
 			List <Viaje> viajeList = new ArrayList<Viaje>();
 			con = Conexion.getConnection();
-			prep = con.prepareStatement("SELECT * from Viajes WHERE ViajeID = " + idViaje);
+			prep = con.prepareStatement("SELECT * from viaje WHERE idViaje = " + idViaje);
 			ResultSet rs = prep.executeQuery();	
 			int idChofer = 0;
 			if(rs.next()) {
@@ -139,10 +139,10 @@ public class ViajeImpl implements ViajeDAO{
 		int idViajeCamion = 0;
 		try {
 			con = Conexion.getConnection();
-			prep = con.prepareStatement("SELECT * from Viajes WHERE ViajeID = " + idViaje);
+			prep = con.prepareStatement("SELECT * from viaje WHERE idViaje = " + idViaje);
 			ResultSet rs = prep.executeQuery();			
 			if(rs.next()) { //If ya que solo tiene un viaje establecido el camion
-				idViajeCamion = rs.getInt(9);
+				idViajeCamion = rs.getInt(8);
 			}
 			return idViajeCamion;
 		}
@@ -158,7 +158,7 @@ public class ViajeImpl implements ViajeDAO{
 			Viaje v = null;
 			PreparedStatement prep = null;	
 			con = Conexion.getConnection();
-			prep = con.prepareStatement("SELECT * from Viajes WHERE ViajeID = " + idViaje);
+			prep = con.prepareStatement("SELECT * from viaje WHERE idViaje = " + idViaje);
 			ResultSet rs = prep.executeQuery();			
 			if(rs.next()) { //If ya que solo tiene un viaje establecido el camion
 				String destino = rs.getString(2);
@@ -181,11 +181,11 @@ public class ViajeImpl implements ViajeDAO{
 		return null;
 	}
 
-
 	@Override
 	public int buscarViajeChoferID(int idViaje) throws Exception {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
 
 }

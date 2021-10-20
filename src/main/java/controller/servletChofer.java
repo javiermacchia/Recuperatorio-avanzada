@@ -39,8 +39,23 @@ import dominio.Viaje;
 	    }
 
 		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			servletLogin sl = new servletLogin();
+			String idViajes = request.getParameter("cmbViajes");
+			String btnEnviarId = request.getParameter("btnEnviarId");
+			System.out.println("ID"+btnEnviarId);
+			if(btnEnviarId != null) {
+			int idV = Integer.parseInt(idViajes);
+			for (int i=0; i<sl.getCh().getListaViaje().size();i++) {
+				if(sl.getCh().getListaViaje().get(i).getIdViaje()==idV) {
+					viajeAux=sl.getCh().getListaViaje().get(i);
+					break;
+				}
+			}
 			
-			response.getWriter().append("Served at: ").append(request.getContextPath());
+			request.setAttribute("idViajes", idV);
+			request.getRequestDispatcher("Chofer.jsp").forward(request, response);
+			}
+			//response.getWriter().append("Served at: ").append(request.getContextPath());
 		}
 
 		protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -65,7 +80,8 @@ import dominio.Viaje;
 			}
 			
 			viajeAux = null;
-			sl.menuChofer(response);
+			request.setAttribute("idViajes", null);
+			sl.desconectar(request, response);
 			//doGet(request, response);
 		}
 
